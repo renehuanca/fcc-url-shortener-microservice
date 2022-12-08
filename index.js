@@ -34,7 +34,10 @@ app.get('/api/hello', function(req, res) {
 
 app.post('/api/shorturl', async (req, res) => {
 	try {
-		new URL(req.body.url)
+		const urlInstance = new URL(req.body.url)
+		if (urlInstance.protocol == 'http:') {
+			throw 'invalid url'
+		}
 	} catch (error) {
 		return res.status(500).json({error: 'invalid url'})
 	}
