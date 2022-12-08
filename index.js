@@ -1,4 +1,6 @@
 require('dotenv').config();
+const validUrl = require('valid-url')
+const urlExist = require('url-exist')
 const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors');
@@ -33,14 +35,10 @@ app.get('/api/hello', function(req, res) {
 });
 
 app.post('/api/shorturl', async (req, res) => {
-	try {
-		const urlInstance = new URL(req.body.url)
-		if (urlInstance.protocol == 'http:') {
-			throw 'invalid url'
-		}
-	} catch (error) {
+
+	if (!validUrl.isUri(req.body.url) && !await urlExist(req.body.url)) {
 		return res.status(500).json({error: 'invalid url'})
-	}
+	} 
 
 	try {
 		const urlFound = await Url.findOne({original_url: req.body.url})
