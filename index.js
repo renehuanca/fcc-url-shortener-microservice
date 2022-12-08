@@ -60,6 +60,15 @@ app.post('/api/shorturl', async (req, res) => {
 	}
 })
 
+app.get('/api/shorturl/:id', async (req, res) => {
+	try {
+		const url = await Url.findOne({short_url: req.params.id})
+		res.redirect(url.original_url)
+	} catch(error) {
+		res.json({error: 'not found'})
+	}
+})
+
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
 });
